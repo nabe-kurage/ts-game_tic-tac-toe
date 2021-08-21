@@ -1,14 +1,16 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener(
+  'DOMContentLoaded',
+  function () {
     // change player
     let xIsNext: boolean = true
     const nextPlayerView = document.getElementById('nextPlayer')
     const changePlayer = () => {
-        xIsNext = !xIsNext
-        if (xIsNext) {
-            nextPlayerView.innerHTML = 'x'
-        } else {
-            nextPlayerView.innerHTML = 'o'
-        }
+      xIsNext = !xIsNext
+      if (xIsNext) {
+        nextPlayerView.innerHTML = 'x'
+      } else {
+        nextPlayerView.innerHTML = 'o'
+      }
     }
 
     // click event handlar
@@ -16,10 +18,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const squareArray = Array.from(square)
 
     squareArray.forEach((target) => {
-        target.addEventListener('click', () => {
-            console.log('test')
-            changePlayer()
-        })
+      target.addEventListener('click', () => {
+        console.log('test')
+        changePlayer()
+      })
     })
-    
-}, false);
+  },
+  false
+)

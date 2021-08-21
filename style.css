@@ -1,9 +1,10 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
+    font: 14px 'Century Gothic', Futura, sans-serif;
     margin: 20px;
 }
 
-ol, ul {
+ol,
+ul {
     padding-left: 30px;
 }
 .statesArea {
@@ -18,8 +19,8 @@ ol, ul {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
-  
-  .square {
+
+.square {
     background: #fff;
     border: 1px solid #999;
     float: left;
@@ -33,22 +34,21 @@ ol, ul {
     text-align: center;
     width: 64px;
     cursor: pointer;
-  }
-  
-  .square:focus {
+}
+
+.square:focus {
     outline: none;
-  }
-  
-  .kbd-navigation .square:focus {
+}
+
+.kbd-navigation .square:focus {
     background: #ddd;
-  }
-  
-  .game {
+}
+
+.game {
     display: flex;
     flex-direction: row;
-  }
-  
-  .game-info {
+}
+
+.game-info {
     margin-left: 20px;
-  }
-  
+}
