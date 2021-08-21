@@ -1,24 +1,50 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // change player
+    // for win-loss Judge
+    var winningPattern = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+    // data
     var xIsNext = true;
+    var playerScore = {
+        x: [],
+        o: []
+    };
     var nextPlayerView = document.getElementById('nextPlayer');
+    // methods
     var changePlayer = function () {
         xIsNext = !xIsNext;
-        if (xIsNext) {
-            nextPlayerView.innerHTML = 'x';
-        }
-        else {
-            nextPlayerView.innerHTML = 'o';
-        }
+        nextPlayerView.innerHTML = xIsNext ? 'x' : 'o';
     };
     var setMark = function (target) {
-        console.log(target);
+        target.innerHTML = xIsNext ? 'x' : 'o';
+    };
+    var changePlayerScore = function (target) {
+        var squareNum = target.getAttribute('data-squareNum');
+        console.log(squareNum);
         if (xIsNext) {
-            target.innerHTML = 'x';
+            playerScore['x'].push(squareNum);
         }
         else {
-            target.innerHTML = 'o';
+            playerScore['o'].push(squareNum);
         }
+        console.log(checkWin());
+    };
+    var checkWin = function () {
+        for (var i = 0; i < winningPattern.length; i++) {
+            console.log(playerScore['x']);
+            // console.log(...winningPattern[i])
+            if (playerScore['x'].includes(0)) {
+                return true;
+            }
+        }
+        return false;
     };
     // click event handlar
     var square = document.getElementsByClassName('square');
@@ -26,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     squareArray.forEach(function (target) {
         target.addEventListener('click', function () {
             setMark(target);
+            changePlayerScore(target);
             changePlayer();
         });
     });

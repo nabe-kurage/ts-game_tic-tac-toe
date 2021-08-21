@@ -1,27 +1,56 @@
 document.addEventListener(
     'DOMContentLoaded',
     function () {
-        // change player
+        // for win-loss Judge
+        const winningPattern = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ]
+        // data
         let xIsNext: boolean = true
-        const nextPlayerView: HTMLElement =
-            document.getElementById('nextPlayer')
-
-        const changePlayer = () => {
-            xIsNext = !xIsNext
-            if (xIsNext) {
-                nextPlayerView.innerHTML = 'x'
-            } else {
-                nextPlayerView.innerHTML = 'o'
-            }
+        const playerScore: { x: number[]; o: number[] } = {
+            x: [],
+            o: [],
         }
 
-        const setMark = (target: HTMLElement): void => {
-            console.log(target)
+        const nextPlayerView: HTMLElement = document.getElementById('nextPlayer')
+
+        // methods
+        const changePlayer = () => {
+            xIsNext = !xIsNext
+            nextPlayerView.innerHTML = xIsNext ? 'x' : 'o'
+        }
+
+        const setMark = (target: Element): void => {
+            target.innerHTML = xIsNext ? 'x' : 'o'
+        }
+
+        const changePlayerScore = (target) => {
+            const squareNum: number = target.getAttribute('data-squareNum')
+            console.log(squareNum)
             if (xIsNext) {
-                target.innerHTML = 'x'
+                playerScore['x'].push(squareNum)
             } else {
-                target.innerHTML = 'o'
+                playerScore['o'].push(squareNum)
             }
+            console.log(checkWin())
+        }
+
+        const checkWin = (): boolean => {
+            for (let i = 0; i < winningPattern.length; i++) {
+                console.log(playerScore['x'])
+                // console.log(...winningPattern[i])
+                if (playerScore['x'].includes(0)) {
+                    return true
+                }
+            }
+            return false
         }
 
         // click event handlar
@@ -30,6 +59,7 @@ document.addEventListener(
         squareArray.forEach((target) => {
             target.addEventListener('click', () => {
                 setMark(target)
+                changePlayerScore(target)
                 changePlayer()
             })
         })
