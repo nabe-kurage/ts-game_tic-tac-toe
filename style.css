@@ -1,12 +1,15 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
-  }
-  
-  ol, ul {
+}
+
+ol, ul {
     padding-left: 30px;
-  }
-  
+}
+.statesArea {
+    text-align: center;
+}
+
 .gameArea {
     display: grid;
     justify-content: space-around;
