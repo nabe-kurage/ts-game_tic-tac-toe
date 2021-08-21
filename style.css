@@ -29,6 +29,7 @@ body {
     padding: 0;
     text-align: center;
     width: 64px;
+    cursor: pointer;
   }
   
   .square:focus {
