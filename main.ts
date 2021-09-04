@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ]
     // data
     let xIsNext: boolean = true
+    let isFinished: boolean = false
     const playerScore: { x: number[]; o: number[] } = {
         x: [],
         o: [],
@@ -30,24 +31,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const changePlayerScore = (target) => {
-        const squareNum: number = target.getAttribute('data-squareNum')
-        console.log(squareNum)
+        // MEMO: ここNumber()がないと何故か文字列が入ってしまう…謎
+        const squareNum = Number(target.getAttribute('data-squareNum'))
         if (xIsNext) {
             playerScore['x'].push(squareNum)
         } else {
             playerScore['o'].push(squareNum)
         }
-        console.log(checkWin())
+        if (checkWin()) {
+            const statesArea: HTMLElement = document.getElementById('statesArea')
+            const player = xIsNext ? 'x' : 'o'
+            const text = document.createTextNode('player ' + player + ' win!!')
+            statesArea.appendChild(text)
+            isFinished = true
+        }
     }
 
     const checkWin = (): boolean => {
+        let isWin = false
+        const player = xIsNext ? 'x' : 'o'
         for (let i = 0; i < winningPattern.length; i++) {
-            // console.log(...winningPattern[i])
-            if (playerScore['x'].includes(0)) {
-                return true
+            let included = 0
+            for (let j = 0; j < 3; j++) {
+                if (playerScore[player].includes(winningPattern[i][j])) {
+                    included++
+                }
             }
+            if (included === 3) {
+                isWin = true
+            }
+            included = 0
         }
-        return false
+        return isWin
     }
 
     const isEmptyCell = (target): boolean => {
@@ -59,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const squareArray = Array.from(square)
     squareArray.forEach((target) => {
         target.addEventListener('click', () => {
-            if (isEmptyCell(target)) {
+            if (isEmptyCell(target) && !isFinished) {
                 setMark(target)
                 changePlayerScore(target)
                 changePlayer()

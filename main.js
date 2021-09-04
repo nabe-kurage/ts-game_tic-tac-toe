@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
     // data
     var xIsNext = true;
+    var isFinished = false;
     var playerScore = {
         x: [],
         o: []
@@ -26,24 +27,38 @@ document.addEventListener('DOMContentLoaded', function () {
         target.innerHTML = xIsNext ? 'x' : 'o';
     };
     var changePlayerScore = function (target) {
-        var squareNum = target.getAttribute('data-squareNum');
-        console.log(squareNum);
+        // MEMO: ここNumber()がないと何故か文字列が入ってしまう…謎
+        var squareNum = Number(target.getAttribute('data-squareNum'));
         if (xIsNext) {
             playerScore['x'].push(squareNum);
         }
         else {
             playerScore['o'].push(squareNum);
         }
-        console.log(checkWin());
+        if (checkWin()) {
+            var statesArea = document.getElementById('statesArea');
+            var player = xIsNext ? 'x' : 'o';
+            var text = document.createTextNode('player ' + player + ' win!!');
+            statesArea.appendChild(text);
+            isFinished = true;
+        }
     };
     var checkWin = function () {
+        var isWin = false;
+        var player = xIsNext ? 'x' : 'o';
         for (var i = 0; i < winningPattern.length; i++) {
-            // console.log(...winningPattern[i])
-            if (playerScore['x'].includes(0)) {
-                return true;
+            var included = 0;
+            for (var j = 0; j < 3; j++) {
+                if (playerScore[player].includes(winningPattern[i][j])) {
+                    included++;
+                }
             }
+            if (included === 3) {
+                isWin = true;
+            }
+            included = 0;
         }
-        return false;
+        return isWin;
     };
     var isEmptyCell = function (target) {
         return Boolean(!target.textContent);
@@ -53,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var squareArray = Array.from(square);
     squareArray.forEach(function (target) {
         target.addEventListener('click', function () {
-            if (isEmptyCell(target)) {
+            if (isEmptyCell(target) && !isFinished) {
                 setMark(target);
                 changePlayerScore(target);
                 changePlayer();
