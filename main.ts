@@ -1,5 +1,11 @@
+// MEMO: fromがES6の書き方で型に入っていないので追加
+// MEMO: もしくは　`tsc main.ts --watch --lib dom,es6`で回せばOK
+// MEMO: Array.includes()のエラーもとろうと思うとes7で回す必要がある
+interface ArrayConstructor {
+    from(arrayLike: any, mapFn?, thisArg?): Array<any>
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    // for win-loss Judge
     const winningPattern = [
         [0, 1, 2],
         [3, 4, 5],
@@ -10,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
         [0, 4, 8],
         [2, 4, 6],
     ]
-    // data
     let xIsNext: boolean = true
     let isFinished: boolean = false
     const playerScore: { x: number[]; o: number[] } = {
@@ -18,11 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
         o: [],
     }
 
-    const nextPlayerView: HTMLElement = document.getElementById('nextPlayer')
-
     // methods
     const changePlayer = () => {
         xIsNext = !xIsNext
+        const nextPlayerView: HTMLElement = document.getElementById('nextPlayer')
+
         nextPlayerView.innerHTML = xIsNext ? 'x' : 'o'
     }
 
@@ -30,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         target.innerHTML = xIsNext ? 'x' : 'o'
     }
 
-    const changePlayerScore = (target) => {
+    const changePlayerScore = (target: Element) => {
         // MEMO: ここNumber()がないと何故か文字列が入ってしまう…謎
         const squareNum = Number(target.getAttribute('data-squareNum'))
         if (xIsNext) {
@@ -69,9 +74,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return Boolean(!target.textContent)
     }
 
-    // click event handlar
     const square = document.getElementsByClassName('square')
+    // MEMO: fromがエラー出ているので@ts-ignoreを使うか(Array　as any)か？
     const squareArray = Array.from(square)
+
     squareArray.forEach((target) => {
         target.addEventListener('click', () => {
             if (isEmptyCell(target) && !isFinished) {
