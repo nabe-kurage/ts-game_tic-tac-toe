@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     var checkWin = function () {
         for (var i = 0; i < winningPattern.length; i++) {
-            console.log(playerScore['x']);
             // console.log(...winningPattern[i])
             if (playerScore['x'].includes(0)) {
                 return true;
@@ -46,14 +45,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return false;
     };
+    var isEmptyCell = function (target) {
+        return Boolean(!target.textContent);
+    };
     // click event handlar
     var square = document.getElementsByClassName('square');
     var squareArray = Array.from(square);
     squareArray.forEach(function (target) {
         target.addEventListener('click', function () {
-            setMark(target);
-            changePlayerScore(target);
-            changePlayer();
+            if (isEmptyCell(target)) {
+                setMark(target);
+                changePlayerScore(target);
+                changePlayer();
+            }
         });
     });
-}, false);
+});
