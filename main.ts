@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const checkWin = (): boolean => {
-        // 今のプレイヤーがdata-ownerに入っている要素を取得
         const nowPlayerOwnSquares = document.querySelectorAll(`.square[data-owner='${nowPlayer()}']`)
         const nowPlayerOwnSquaresList = Array.from(nowPlayerOwnSquares, (target) =>
             Number(target.getAttribute('data-squareNum'))

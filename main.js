@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
         isFinishedGame = true;
     };
     var checkWin = function () {
-        // 今のプレイヤーがdata-ownerに入っている要素を取得
         var nowPlayerOwnSquares = document.querySelectorAll(".square[data-owner='" + nowPlayer() + "']");
         var nowPlayerOwnSquaresList = Array.from(nowPlayerOwnSquares, function (target) {
             return Number(target.getAttribute('data-squareNum'));
