@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var winningPattern = [
+    // data area
+    var winningPatterns = [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
@@ -10,53 +11,50 @@ document.addEventListener('DOMContentLoaded', function () {
         [2, 4, 6],
     ];
     var xIsNext = true;
-    var isFinished = false;
-    var playerScore = {
-        x: [],
-        o: []
+    var isFinishedGame = false;
+    // methods area
+    var nowPlayer = function () {
+        return xIsNext ? 'x' : 'o';
     };
-    // methods
     var changePlayer = function () {
         xIsNext = !xIsNext;
         var nextPlayerView = document.getElementById('nextPlayer');
-        nextPlayerView.innerHTML = xIsNext ? 'x' : 'o';
+        nextPlayerView.innerHTML = nowPlayer();
     };
     var setMark = function (target) {
-        target.innerHTML = xIsNext ? 'x' : 'o';
+        target.innerHTML = nowPlayer();
     };
     var changePlayerScore = function (target) {
-        // MEMO: ここNumber()がないと何故か文字列が入ってしまう…謎
-        var squareNum = Number(target.getAttribute('data-squareNum'));
-        if (xIsNext) {
-            playerScore['x'].push(squareNum);
-        }
-        else {
-            playerScore['o'].push(squareNum);
-        }
-        if (checkWin()) {
-            var statesArea = document.getElementById('statesArea');
-            var player = xIsNext ? 'x' : 'o';
-            var text = document.createTextNode('player ' + player + ' win!!');
-            statesArea.appendChild(text);
-            isFinished = true;
-        }
+        target.setAttribute('data-owner', nowPlayer());
+        if (checkWin())
+            finishGame();
+    };
+    var finishGame = function () {
+        var statesArea = document.getElementById('statesArea');
+        var text = document.createTextNode('nowPlayer ' + nowPlayer() + ' win!!');
+        statesArea.appendChild(text);
+        isFinishedGame = true;
     };
     var checkWin = function () {
-        var isWin = false;
-        var player = xIsNext ? 'x' : 'o';
-        for (var i = 0; i < winningPattern.length; i++) {
+        // 今のプレイヤーがdata-ownerに入っている要素を取得
+        var nowPlayerOwnSquares = document.querySelectorAll(".square[data-owner='" + nowPlayer() + "']");
+        var nowPlayerOwnSquaresList = Array.from(nowPlayerOwnSquares, function (target) {
+            return Number(target.getAttribute('data-squareNum'));
+        });
+        for (var i = 0; i < winningPatterns.length; i++) {
             var included = 0;
             for (var j = 0; j < 3; j++) {
-                if (playerScore[player].includes(winningPattern[i][j])) {
+                if (nowPlayerOwnSquaresList.includes(winningPatterns[i][j])) {
                     included++;
                 }
             }
             if (included === 3) {
-                isWin = true;
+                // MEMO: 勝ち判定が出た場合その後の値のチェックは不要
+                return true;
             }
             included = 0;
         }
-        return isWin;
+        return false;
     };
     var isEmptyCell = function (target) {
         return Boolean(!target.textContent);
@@ -66,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var squareArray = Array.from(square);
     squareArray.forEach(function (target) {
         target.addEventListener('click', function () {
-            if (isEmptyCell(target) && !isFinished) {
+            if (isEmptyCell(target) && !isFinishedGame) {
                 setMark(target);
                 changePlayerScore(target);
                 changePlayer();

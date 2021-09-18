@@ -1,12 +1,15 @@
-// MEMO: fromがES6の書き方で型に入っていないので追加
-// MEMO: もしくは　`tsc main.ts --watch --lib dom,es6`で回せばOK
-// MEMO: Array.includes()のエラーもとろうと思うとes7で回す必要がある
-interface ArrayConstructor {
-    from(arrayLike: any, mapFn?, thisArg?): Array<any>
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-    const winningPattern = [
+    // MEMO: fromがES6の書き方で型に入っていないので追加
+    // MEMO: もしくは　`tsc main.ts --watch --lib dom,es6`で回せばOK
+    // MEMO: Array.includes()のエラーもとろうと思うとes7で回す必要がある
+    interface ArrayConstructor {
+        from(arrayLike: any, mapFn?, thisArg?): Array<any>
+    }
+
+    type Player = 'x' | 'o'
+
+    // data area
+    const winningPatterns = [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
@@ -17,57 +20,58 @@ document.addEventListener('DOMContentLoaded', function () {
         [2, 4, 6],
     ]
     let xIsNext: boolean = true
-    let isFinished: boolean = false
-    const playerScore: { x: number[]; o: number[] } = {
-        x: [],
-        o: [],
+    let isFinishedGame: boolean = false
+
+    // methods area
+    const nowPlayer = (): Player => {
+        return xIsNext ? 'x' : 'o'
     }
 
-    // methods
     const changePlayer = () => {
         xIsNext = !xIsNext
         const nextPlayerView: HTMLElement = document.getElementById('nextPlayer')
 
-        nextPlayerView.innerHTML = xIsNext ? 'x' : 'o'
+        nextPlayerView.innerHTML = nowPlayer()
     }
 
     const setMark = (target: Element): void => {
-        target.innerHTML = xIsNext ? 'x' : 'o'
+        target.innerHTML = nowPlayer()
     }
 
     const changePlayerScore = (target: Element) => {
-        // MEMO: ここNumber()がないと何故か文字列が入ってしまう…謎
-        const squareNum = Number(target.getAttribute('data-squareNum'))
-        if (xIsNext) {
-            playerScore['x'].push(squareNum)
-        } else {
-            playerScore['o'].push(squareNum)
-        }
-        if (checkWin()) {
-            const statesArea: HTMLElement = document.getElementById('statesArea')
-            const player = xIsNext ? 'x' : 'o'
-            const text = document.createTextNode('player ' + player + ' win!!')
-            statesArea.appendChild(text)
-            isFinished = true
-        }
+        target.setAttribute('data-owner', nowPlayer())
+
+        if (checkWin()) finishGame()
+    }
+
+    const finishGame = () => {
+        const statesArea: HTMLElement = document.getElementById('statesArea')
+        const text = document.createTextNode('nowPlayer ' + nowPlayer() + ' win!!')
+        statesArea.appendChild(text)
+        isFinishedGame = true
     }
 
     const checkWin = (): boolean => {
-        let isWin = false
-        const player = xIsNext ? 'x' : 'o'
-        for (let i = 0; i < winningPattern.length; i++) {
+        // 今のプレイヤーがdata-ownerに入っている要素を取得
+        const nowPlayerOwnSquares = document.querySelectorAll(`.square[data-owner='${nowPlayer()}']`)
+        const nowPlayerOwnSquaresList = Array.from(nowPlayerOwnSquares, (target) =>
+            Number(target.getAttribute('data-squareNum'))
+        )
+
+        for (let i = 0; i < winningPatterns.length; i++) {
             let included = 0
             for (let j = 0; j < 3; j++) {
-                if (playerScore[player].includes(winningPattern[i][j])) {
+                if (nowPlayerOwnSquaresList.includes(winningPatterns[i][j])) {
                     included++
                 }
             }
             if (included === 3) {
-                isWin = true
+                // MEMO: 勝ち判定が出た場合その後の値のチェックは不要
+                return true
             }
             included = 0
         }
-        return isWin
+        return false
     }
 
     const isEmptyCell = (target): boolean => {
@@ -80,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     squareArray.forEach((target) => {
         target.addEventListener('click', () => {
-            if (isEmptyCell(target) && !isFinished) {
+            if (isEmptyCell(target) && !isFinishedGame) {
                 setMark(target)
                 changePlayerScore(target)
                 changePlayer()
