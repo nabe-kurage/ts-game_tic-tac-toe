@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var xIsNext = true;
     var isFinishedGame = false;
     // methods area
+    // nowは副詞なのでcurrentの方がよい
     var nowPlayer = function () {
         return xIsNext ? 'x' : 'o';
     };
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var statesArea = document.getElementById('statesArea');
         var text = document.createTextNode('nowPlayer ' + nowPlayer() + ' win!!');
         statesArea.appendChild(text);
+        // isGameFinishedの方がよい　疑問文
         isFinishedGame = true;
     };
     var checkWin = function () {

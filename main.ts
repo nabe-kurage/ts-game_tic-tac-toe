@@ -20,10 +20,11 @@ document.addEventListener('DOMContentLoaded', function () {
         [2, 4, 6],
     ]
     let xIsNext: boolean = true
-    let isFinishedGame: boolean = false
+    let isGameFinished: boolean = false
 
     // methods area
-    const nowPlayer = (): Player => {
+    // nowは副詞なのでcurrentの方がよい
+    const currentPlayer = (): Player => {
         return xIsNext ? 'x' : 'o'
     }
 
@@ -31,36 +32,37 @@ document.addEventListener('DOMContentLoaded', function () {
         xIsNext = !xIsNext
         const nextPlayerView: HTMLElement = document.getElementById('nextPlayer')
 
-        nextPlayerView.innerHTML = nowPlayer()
+        nextPlayerView.innerHTML = currentPlayer()
     }
 
     const setMark = (target: Element): void => {
-        target.innerHTML = nowPlayer()
+        target.innerHTML = currentPlayer()
     }
 
     const changePlayerScore = (target: Element) => {
-        target.setAttribute('data-owner', nowPlayer())
+        target.setAttribute('data-owner', currentPlayer())
 
         if (checkWin()) finishGame()
     }
 
     const finishGame = () => {
         const statesArea: HTMLElement = document.getElementById('statesArea')
-        const text = document.createTextNode('nowPlayer ' + nowPlayer() + ' win!!')
+        const text = document.createTextNode('currentPlayer ' + currentPlayer() + ' win!!')
         statesArea.appendChild(text)
-        isFinishedGame = true
+        // isGameFinishedの方がよい　疑問文
+        isGameFinished = true
     }
 
     const checkWin = (): boolean => {
-        const nowPlayerOwnSquares = document.querySelectorAll(`.square[data-owner='${nowPlayer()}']`)
-        const nowPlayerOwnSquaresList = Array.from(nowPlayerOwnSquares, (target) =>
+        const currentPlayerOwnSquares = document.querySelectorAll(`.square[data-owner='${currentPlayer()}']`)
+        const currentPlayerOwnSquaresList = Array.from(currentPlayerOwnSquares, (target) =>
             Number(target.getAttribute('data-squareNum'))
         )
 
         for (let i = 0; i < winningPatterns.length; i++) {
             let included = 0
             for (let j = 0; j < 3; j++) {
-                if (nowPlayerOwnSquaresList.includes(winningPatterns[i][j])) {
+                if (currentPlayerOwnSquaresList.includes(winningPatterns[i][j])) {
                     included++
                 }
             }
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     squareArray.forEach((target) => {
         target.addEventListener('click', () => {
-            if (isEmptyCell(target) && !isFinishedGame) {
+            if (isEmptyCell(target) && !isGameFinished) {
                 setMark(target)
                 changePlayerScore(target)
                 changePlayer()
