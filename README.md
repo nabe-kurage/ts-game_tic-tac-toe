@@ -1,3 +1,3 @@
 # ts-game_tic-tac-toe
 
-<!-- TODO: demo追加 -->
+It's a very common tic tac toe game.
