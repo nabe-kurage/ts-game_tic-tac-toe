@@ -11,41 +11,41 @@ document.addEventListener('DOMContentLoaded', function () {
         [2, 4, 6],
     ];
     var xIsNext = true;
-    var isFinishedGame = false;
+    var isGameFinished = false;
     // methods area
     // nowは副詞なのでcurrentの方がよい
-    var nowPlayer = function () {
+    var currentPlayer = function () {
         return xIsNext ? 'x' : 'o';
     };
     var changePlayer = function () {
         xIsNext = !xIsNext;
         var nextPlayerView = document.getElementById('nextPlayer');
-        nextPlayerView.innerHTML = nowPlayer();
+        nextPlayerView.innerHTML = currentPlayer();
     };
     var setMark = function (target) {
-        target.innerHTML = nowPlayer();
+        target.innerHTML = currentPlayer();
     };
     var changePlayerScore = function (target) {
-        target.setAttribute('data-owner', nowPlayer());
+        target.setAttribute('data-owner', currentPlayer());
         if (checkWin())
             finishGame();
     };
     var finishGame = function () {
         var statesArea = document.getElementById('statesArea');
-        var text = document.createTextNode('nowPlayer ' + nowPlayer() + ' win!!');
+        var text = document.createTextNode('currentPlayer ' + currentPlayer() + ' win!!');
         statesArea.appendChild(text);
         // isGameFinishedの方がよい　疑問文
-        isFinishedGame = true;
+        isGameFinished = true;
     };
     var checkWin = function () {
-        var nowPlayerOwnSquares = document.querySelectorAll(".square[data-owner='" + nowPlayer() + "']");
-        var nowPlayerOwnSquaresList = Array.from(nowPlayerOwnSquares, function (target) {
+        var currentPlayerOwnSquares = document.querySelectorAll(".square[data-owner='" + currentPlayer() + "']");
+        var currentPlayerOwnSquaresList = Array.from(currentPlayerOwnSquares, function (target) {
             return Number(target.getAttribute('data-squareNum'));
         });
         for (var i = 0; i < winningPatterns.length; i++) {
             var included = 0;
             for (var j = 0; j < 3; j++) {
-                if (nowPlayerOwnSquaresList.includes(winningPatterns[i][j])) {
+                if (currentPlayerOwnSquaresList.includes(winningPatterns[i][j])) {
                     included++;
                 }
             }
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var squareArray = Array.from(square);
     squareArray.forEach(function (target) {
         target.addEventListener('click', function () {
-            if (isEmptyCell(target) && !isFinishedGame) {
+            if (isEmptyCell(target) && !isGameFinished) {
                 setMark(target);
                 changePlayerScore(target);
                 changePlayer();
